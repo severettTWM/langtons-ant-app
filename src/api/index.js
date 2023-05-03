@@ -13,7 +13,7 @@ export const getCells = async (onSuccess, xDimension, yDimension, numberOfMoves)
     });
 
     const data = await response.json();
-    console.log(data)
+    
     if (response.status === Status.OK) {
       onSuccess(data);
     } else {

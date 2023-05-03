@@ -20,6 +20,7 @@ export const ContextProvider = ({ children }) => {
     const [antDirection, setAntDirection] = useState(Directions.ANTRIGHT)
     const [numberOfMoves, setNumberOfMoves] = useState(0)
     const [numberOfMovesRemaining, setNumberOfMovesRemaining] = useState(0)
+    const [numberOfVisibleMoves, setNumberOfVisibleMoves] = useState(0)
     const canvasRef = useRef(null)
 
     useEffect(() => {
@@ -52,6 +53,8 @@ export const ContextProvider = ({ children }) => {
                 setNumberOfMoves,
                 numberOfMovesRemaining,
                 setNumberOfMovesRemaining,
+                numberOfVisibleMoves,
+                setNumberOfVisibleMoves,
                 canvasRef,
             }}
             >{children}</Context.Provider>
