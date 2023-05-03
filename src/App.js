@@ -6,7 +6,6 @@ function App() {
   return (
     <ContextProvider>
       <div>
-        <h1>Hey</h1>
         <Controls />
         <Canvas />
       </div>

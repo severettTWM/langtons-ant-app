@@ -1,25 +1,17 @@
 import React, { createContext, useEffect, useState, useRef } from 'react';
 import { Directions } from './constants'
+import { getCells } from './api'
 
 export const Context = createContext(null);
-
-const defaultCellStates = []
-const numberOSquaresX = Math.floor(window.innerWidth/10)
+const numberOfSquaresX = Math.floor(window.innerWidth/10)
 const numberOfSquaresY = Math.floor(window.innerHeight/10)
-const centerX = Math.floor(numberOSquaresX/2)
+const centerX = Math.floor(numberOfSquaresX/2)
 const centerY = Math.floor(numberOfSquaresY/2)
-
-for (var i=0; i<numberOSquaresX; ++i) {
-    defaultCellStates.push([])
-    for (var j=0; j<numberOfSquaresY; ++j){
-        defaultCellStates[i].push(0)
-    }
-}
 
 export const ContextProvider = ({ children }) => {
     const [activeStatus, setActiveStatus] = useState('inactive')
     const [numberOfCells, setNumberOfCells] = useState(9)
-    const [cellStates, setCellStates] = useState(defaultCellStates)
+    const [cellStates, setCellStates] = useState([])
     const [startMoveGrid, setStartMoveGrid] = useState(null)
     const [gridDimensions, setGridDimensions] = useState(null)
     const [distanceFromCenter, setDistanceFromCenter] = useState({x: 0, y: 0})
@@ -32,6 +24,7 @@ export const ContextProvider = ({ children }) => {
 
     useEffect(() => {
         setGridDimensions({x: Math.floor(window.innerWidth/10), y: Math.floor(window.innerHeight/10)})
+        getCells(setCellStates, numberOfSquaresX, numberOfSquaresY, 0)
     }, [setGridDimensions])
 
     return (

@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { Context } from './context'
 import { Directions } from './constants'
+import {getCells } from './api'
 
 const Canvas = () => {
     const { 
@@ -38,9 +39,19 @@ const Canvas = () => {
         return newCoordinates
       }
 
+      const numberOfSquaresX = Math.floor(window.innerWidth/10)
+      const numberOfSquaresY = Math.floor(window.innerHeight/10)
     let timer
-    var newCellStates = []
-
+    //var newCellStates = []
+    const updateCells = () => {
+        if (activeStatus == 'active' && numberOfMovesRemaining > 0) {
+            timer = !timer && setInterval(() => {
+                getCells(setCellStates, numberOfSquaresX, numberOfSquaresY, numberOfMovesRemaining)
+                setNumberOfMovesRemaining(numberOfMovesRemaining - 1)
+            }, 5)
+        }
+    }
+/*
     const updateCells = () => {
         if (activeStatus == 'active' && numberOfMovesRemaining > 0) {
             timer = !timer && setInterval(() => {
@@ -71,6 +82,7 @@ const Canvas = () => {
             }, 5)
         }
     }
+    */
 
     useEffect(() => {
         updateCells()
@@ -103,11 +115,12 @@ const Canvas = () => {
         let right = 2*canvasRef.current.width;
         let bottom = 2*canvasRef.current.height;
         ctx.clearRect(left, top, right - left, bottom - top);
-    
-        for (var i=0; i<(Math.floor(window.innerWidth/10)); ++i) {
-            for (var j=0; j<(Math.floor(window.innerHeight/10)); ++j) {
-                if (cellStates[i][j]){
-                    ctx.fillRect(i*10, j*10, 10, 10)
+        if (cellStates.length > 0) {
+            for (var i=0; i<(Math.floor(window.innerWidth/10)); ++i) {
+                for (var j=0; j<(Math.floor(window.innerHeight/10)); ++j) {
+                    if (cellStates[i][j]){
+                        ctx.fillRect(i*10, j*10, 10, 10)
+                    }
                 }
             }
         }
