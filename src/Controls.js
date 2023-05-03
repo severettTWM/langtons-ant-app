@@ -1,24 +1,23 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { Context } from './context';
 
 const Controls = () => {
-    const { activeStatus, setActiveStatus, timerId, setTimerId } = useContext(Context)
-    console.log("activeStatus: " + activeStatus)
-    console.log("timerId: " + timerId)
-    if (activeStatus == 'active' && timerId == -1) {
-        setTimerId(setInterval(function() { console.log('hey') }, 1000))
-    } 
+    const { 
+        activeStatus, 
+        setActiveStatus, 
+        numberOfMoves,
+        setNumberOfMoves,
+        setNumberOfMovesRemaining,
+    } = useContext(Context)
 
     return (
         <div className="controls">
-            <input />
-            { activeStatus == 'inactive' && <button onClick={() => setActiveStatus('active')}>Start</button> }
-            { activeStatus == 'active' && <button onClick={() => {
-                for (var i = 1; i < 99999; i++)
-                    window.clearInterval(i);
-                setActiveStatus('inactive')
-                setTimerId(-1)
-            }}>Stop</button> }
+            <input type="number" value={numberOfMoves} onChange={(e) => setNumberOfMoves(e.target.value)} />
+            { activeStatus == 'inactive' && <button onClick={() => {
+                setNumberOfMovesRemaining(numberOfMoves)
+                setActiveStatus('active')
+            }}>Start</button> }
+            { activeStatus == 'active' && <button onClick={() => setActiveStatus('inactive')}>Stop</button> }
         </div>
     )
 }

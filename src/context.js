@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState, useRef } from 'react';
+import { Directions } from './constants'
 
 export const Context = createContext(null);
 
@@ -11,12 +12,6 @@ const centerY = Math.floor(numberOfSquaresY/2)
 for (var i=0; i<numberOSquaresX; ++i) {
     defaultCellStates.push([])
     for (var j=0; j<numberOfSquaresY; ++j){
-        
-        if (i == centerX && j == centerY) {
-            defaultCellStates[i].push(1)
-            continue
-        }
-        
         defaultCellStates[i].push(0)
     }
 }
@@ -30,6 +25,9 @@ export const ContextProvider = ({ children }) => {
     const [distanceFromCenter, setDistanceFromCenter] = useState({x: 0, y: 0})
     const [antCoordinates, setAntCoordinates] = useState({x: centerX, y: centerY})
     const [timerId, setTimerId] = useState(-1)
+    const [antDirection, setAntDirection] = useState(Directions.ANTRIGHT)
+    const [numberOfMoves, setNumberOfMoves] = useState(0)
+    const [numberOfMovesRemaining, setNumberOfMovesRemaining] = useState(0)
     const canvasRef = useRef(null)
 
     useEffect(() => {
@@ -55,6 +53,12 @@ export const ContextProvider = ({ children }) => {
                 setAntCoordinates,
                 timerId,
                 setTimerId,
+                antDirection,
+                setAntDirection,
+                numberOfMoves,
+                setNumberOfMoves,
+                numberOfMovesRemaining,
+                setNumberOfMovesRemaining,
                 canvasRef,
             }}
             >{children}</Context.Provider>

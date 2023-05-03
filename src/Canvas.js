@@ -1,11 +1,82 @@
 import { useContext, useEffect } from 'react'
 import { Context } from './context'
+import { Directions } from './constants'
 
 const Canvas = () => {
-    const { canvasRef, cellStates, startMoveGrid, setStartMoveGrid, distanceFromCenter, setDistanceFromCenter } = useContext(Context)
+    const { 
+        canvasRef, 
+        cellStates, 
+        setCellStates, 
+        startMoveGrid, 
+        setStartMoveGrid, 
+        setDistanceFromCenter, 
+        antCoordinates,
+        setAntCoordinates,
+        activeStatus,
+        antDirection,
+        setAntDirection,
+        numberOfMovesRemaining,
+        setNumberOfMovesRemaining,
+    } = useContext(Context)  
+
+    const moveForward = () => {
+        const newCoordinates = {x: antCoordinates.x, y: antCoordinates.y}
+        switch (antDirection) {
+          case Directions.ANTUP:
+            newCoordinates.x = newCoordinates.x - 1
+            break;
+          case Directions.ANTRIGHT:
+            newCoordinates.y = newCoordinates.y + 1
+            break;
+          case Directions.ANTDOWN:
+            newCoordinates.x = newCoordinates.x + 1
+            break;
+          case Directions.ANTLEFT:
+            newCoordinates.y = newCoordinates.y - 1
+            break;
+        }
+        return newCoordinates
+      }
+
+    let timer
+    var newCellStates = []
+
+    const updateCells = () => {
+        if (activeStatus == 'active' && numberOfMovesRemaining > 0) {
+            timer = !timer && setInterval(() => {
+                var newCoordinates = moveForward()
+
+                for (var i=0; i<(Math.floor(window.innerWidth/10)); ++i) {
+                    newCellStates.push([])
+                    for (var j=0; j<(Math.floor(window.innerHeight/10)); ++j) {
+                        newCellStates[i].push(0)
+                        if (cellStates[i][j])
+                            newCellStates[i][j] = 1
+                        if (i == (newCoordinates.x) && j == (newCoordinates.y)) {
+                            if (newCellStates[i][j] == 1) {
+                                const leftTurn = ((antDirection - 1) + (Directions.ANTLEFT + 1)) % (Directions.ANTLEFT + 1)
+                                setAntDirection(leftTurn)
+                            } else {
+                                const rightTurn = ((antDirection + 1) + (Directions.ANTLEFT + 1)) % (Directions.ANTLEFT + 1)
+                                setAntDirection(rightTurn)
+                            }
+                            newCellStates[i][j] = (cellStates[i][j] + 1) % 2
+                        }
+                    }
+                }
+
+                setNumberOfMovesRemaining(numberOfMovesRemaining - 1)
+                setAntCoordinates(newCoordinates)
+                setCellStates(newCellStates)
+            }, 5)
+        }
+    }
+
     useEffect(() => {
+        updateCells()
         draw()
-    })
+        return () => clearInterval(timer)
+    }, [cellStates, updateCells])
 
     const getPos = (e) => ({
         x: e.clientX - canvasRef.current.offsetLeft,
@@ -22,7 +93,7 @@ const Canvas = () => {
         draw();
     }
 
-    const draw = () => {
+    const draw = () => {          
         var ctx = canvasRef.current.getContext('2d')
         canvasRef.current.width = window.innerWidth
         canvasRef.current.height = window.innerHeight
